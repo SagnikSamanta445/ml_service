@@ -1,0 +1,14 @@
+venv/
+__pycache__/
+*.pyc
+.env
+
+# models
+*.pt
+*.pth
+*.onnx
+*.h5
+*.ckpt
+
+# datasets
+data/
