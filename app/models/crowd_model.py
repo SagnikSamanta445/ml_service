@@ -1,15 +1,18 @@
-def crowd_score(f):
-    score = 0.0
+import joblib
+import os
 
-    score += min(f.num_pois_100m / 10, 1.0) * 0.4
-    score += min(f.num_transit_stops_200m / 5, 1.0) * 0.3
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "crowd_model.pkl")
 
-    if f.area_type == "commercial":
-        score += 0.3
-    elif f.area_type == "mixed":
-        score += 0.15
+model = joblib.load(MODEL_PATH)
 
-    if f.hour_of_day >= 22:
-        score *= 0.6
+def crowd_score(features):
 
-    return min(score, 1.0)
+    X = [[
+        features.hour_of_day,
+        features.day_of_week,
+        features.num_pois_100m,
+        features.num_transit_stops_200m,
+        {"residential":0,"mixed":1,"commercial":2}[features.area_type]
+    ]]
+
+    return float(model.predict(X)[0])
